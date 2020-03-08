@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "kafka": "./start.sh && /usr/bin/kafka-server-start config/server.properties",
+    "init": "./start.sh",
+    "kafka": "/usr/bin/kafka-server-start config/server.properties",
     "zoo": "/usr/bin/zookeeper-server-start config/zookeeper.properties",
     "test-consumer": "/usr/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic pd-calls --from-beginning"
   },
