@@ -7,7 +7,8 @@
     "kafka": "/usr/bin/kafka-server-start config/server.properties",
     "zoo": "/usr/bin/zookeeper-server-start config/zookeeper.properties",
     "start": "python kafka_server.py",
-    "test-consumer": "/usr/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic pd-calls --from-beginning"
+    "test-consumer": "/usr/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic pd-calls --from-beginning",
+    "test-consumer-local": "~/Apps/confluent-5.3.0/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic pd-calls --from-beginning"
   },
   "repository": {
     "type": "git",
