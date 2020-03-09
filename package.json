@@ -8,8 +8,8 @@
     "zoo": "/usr/bin/zookeeper-server-start config/zookeeper.properties",
     "start": "python kafka_server.py",
     "spark": "spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.4 --master local[*] data_stream.py",
-    "test-consumer": "/usr/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic pd-calls --from-beginning",
-    "test-consumer-local": "~/Apps/confluent-5.3.0/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic pd-calls --from-beginning",
+    "test-consumer": "/usr/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic sfpd-calls --from-beginning",
+    "test-consumer-local": "~/Apps/confluent-5.3.0/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic sfpd-calls --from-beginning",
     "spark-local": "/usr/local/spark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.4 --master local[*] data_stream.py"
   },
   "repository": {
