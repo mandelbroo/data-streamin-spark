@@ -5,8 +5,20 @@ from pyspark.sql.types import *
 import pyspark.sql.functions as psf
 
 schema = StructType([
+    StructField('crime_id', StringType(), True),
     StructField('original_crime_type_name', StringType(), True),
+    StructField('report_date', StringType(), True),
+    StructField('call_date', StringType(), True),
+    StructField('offense_date', StringType(), True),
+    StructField('call_time', StringType(), True),
+    StructField('call_date_time', TimestampType(), True),
     StructField('disposition', StringType(), True),
+    StructField('address', StringType(), True),
+    StructField('city', StringType(), True),
+    StructField('state', StringType(), True),
+    StructField('agency_id', StringType(), True),
+    StructField('address_type', StringType(), True),
+    StructField('common_location', StringType(), True),
 ])
 
 def run_spark_job(spark):
@@ -20,6 +32,7 @@ def run_spark_job(spark):
         .option("kafka.bootstrap.servers", "localhost:9092") \
         .option("subscribe", "sfpd-calls") \
         .option("maxOffsetsPerTrigger", 200) \
+        .option('stopGracefullyOnShutdown', "true") \
         .load()
 
     # Show schema for the incoming resources for checks
@@ -35,12 +48,17 @@ def run_spark_job(spark):
 
     # TODO select original_crime_type_name and disposition
     distinct_table = service_table \
-        .select("original_crime_type_name", "disposition")
+        .select("original_crime_type_name", "disposition", "call_date_time") \
+        .distinct() \
+        .withWatermark('call_date_time', "1 minute")
 
     # count the number of original crime type
     agg_df = distinct_table \
-                .groupBy(service_table.original_crime_type_name) \
-                .count()
+                .dropna() \
+                .select("original_crime_type_name") \
+                .groupby("original_crime_type_name") \
+                .agg({"original_crime_type_name" : "count"}) \
+                .orderBy("count(original_crime_type_name)", ascending=False)
 
     # TODO Q1. Submit a screen shot of a batch ingestion of the aggregation
     # TODO write output stream
@@ -65,7 +83,7 @@ def run_spark_job(spark):
                         .select("disposition_code")
 
     # TODO join on disposition column
-    join_query = agg_df.join(radio_code_df, agg_df.disposition == radio_code_df.disposition, "inner")
+    join_query = agg_df.join(radio_code_df, agg_df.disposition == radio_code_df.disposition, "left_outer")
 
     join_query.awaitTermination()
 
